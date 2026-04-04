@@ -1,98 +1,49 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import type { Product } from '@/src/types/product';
 import { Link } from 'expo-router';
+import { useState } from 'react';
+import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
-export default function HomeScreen() {
+export default function Index() {
+  const [products] = useState<Product[]>([]);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView className="mt-10 flex-1 bg-gray-50" showsVerticalScrollIndicator={false}>
+      {/* Header */}
+      <View className="flex-row items-center justify-between border-b border-gray-200 bg-white p-4">
+        <Text className="text-2xl font-bold text-gray-800">Quản lý sản phẩm</Text>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <Link href="/add" asChild>
+          <TouchableOpacity className="rounded-xl bg-blue-600 px-5 py-2.5">
+            <Text className="font-semibold text-white">+ Thêm mới</Text>
+          </TouchableOpacity>
+        </Link>
+      </View>
+
+      {/* Danh sách sản phẩm */}
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.idsanpham}
+        renderItem={({ item }) => (
+          <View className="mx-4 mt-4 rounded-2xl bg-white p-4 shadow-sm">
+            <Text className="text-lg font-semibold">{item.tensanpham}</Text>
+            <Text className="text-gray-500">{item.loaisanpham}</Text>
+            <Text className="mt-1 font-medium text-green-600">
+              {item.gia.toLocaleString('vi-VN')} đ
+            </Text>
+          </View>
+        )}
+        ListEmptyComponent={
+          <View className="mt-20 flex-1 items-center justify-center">
+            <Text className="text-lg text-gray-400">Chưa có sản phẩm nào</Text>
+            
+            <Link href="/add" asChild>
+              <TouchableOpacity className="mt-6 rounded-xl bg-blue-600 px-8 py-3">
+                <Text className="font-medium text-white">Thêm sản phẩm đầu tiên</Text>
+              </TouchableOpacity>
+            </Link>
+          </View>
+        }
+      />
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
