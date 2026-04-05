@@ -1,16 +1,33 @@
+import { userService } from '@/src/services/user.service';
 import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = () => {
-    console.log('Login:', { email, password });
+  const handleLogin = async () => {
+    if (!email.trim() || !password.trim()) {
+      Alert.alert('Lỗi', 'Vui lòng nhập email và mật khẩu.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await userService.login(email, password);
+      router.replace('/(tabs)');
+      console.log('User logged in successfully');
+    } catch (error) {
+      const message = userService.getLoginErrorMessage((error as { code?: string })?.code);
+      Alert.alert('Đăng nhập thất bại', message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -30,10 +47,11 @@ export default function LoginScreen() {
             />
             <TextInput
               className="flex-1 text-xs font-medium text-[#676767]"
-              placeholder="Username or Email"
+              placeholder="Email"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
+              autoCapitalize="none"
               placeholderTextColor="#676767"
             />
           </View>
@@ -62,37 +80,21 @@ export default function LoginScreen() {
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity className="mt-2 items-end">
-              <Text className="text-xs text-[#F83758]">Forgot Password?</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
         <TouchableOpacity
-          className="mt-9 h-[55px] items-center justify-center rounded bg-[#F83758]"
-          onPress={handleLogin}>
-          <Text className="text-[24px] font-semibold text-white">Login</Text>
+          className={`mt-9 h-[55px] items-center justify-center rounded ${loading ? 'bg-[#f26f86]' : 'bg-[#F83758]'}`}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text className="text-[24px] font-semibold text-white">{loading ? 'Đang đăng nhập...' : 'Login'}</Text>
         </TouchableOpacity>
 
-        <View className="mt-[75px] items-center">
-          <Text className="text-md mb-5 font-medium text-[#575757]">- OR Continue with -</Text>
-          <View className="flex-row gap-[10px]">
-            <TouchableOpacity className="h-[54px] w-[54px] items-center justify-center rounded-full border border-[#F83758] bg-[#FCF3F6]">
-              <FontAwesome name="google" size={24} color="#DB4437" />
-            </TouchableOpacity>
-            <TouchableOpacity className="h-[54px] w-[54px] items-center justify-center rounded-full border border-[#F83758] bg-[#FCF3F6]">
-              <FontAwesome name="apple" size={24} color="#000000" />
-            </TouchableOpacity>
-            <TouchableOpacity className="h-[54px] w-[54px] items-center justify-center rounded-full border border-[#F83758] bg-[#FCF3F6]">
-              <FontAwesome name="facebook" size={24} color="#3b5998" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View className="mt-12 flex-row items-center justify-center">
-          <Text className="text-[20px] text-[#575757]">Create An Account </Text>
-          <TouchableOpacity onPress={() => router.push('/')}>
-            <Text className="text-[21px] font-semibold text-[#F83758] underline">Sign Up</Text>
+        <View className="mt-10 flex-row items-center justify-center">
+          <Text className="text-base text-[#575757]">Chưa có tài khoản? </Text>
+          <TouchableOpacity onPress={() => router.push('/resgister')}>
+            <Text className="text-base font-semibold text-[#F83758] underline">Đăng ký</Text>
           </TouchableOpacity>
         </View>
       </View>

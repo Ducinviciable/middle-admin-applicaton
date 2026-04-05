@@ -37,14 +37,14 @@ export default function TabLayout() {
           }}
         /> 
       <Tabs.Screen
-          name="login"
+          name="profile"
           options={{
-            title: "Login", 
+            title: "Profile",
             tabBarIcon: ({ color }) => (
               <IconSymbol size={28} name="person.circle" color={color} />
             ),
           }}
-        /> 
+        />
       </Tabs> 
   );
 }

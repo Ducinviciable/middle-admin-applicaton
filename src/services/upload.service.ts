@@ -7,14 +7,14 @@ export const UploadService = {
 
   async pickImage(): Promise<string | null> {
     try {
-      // Yêu cầu quyền truy cập thư viện ảnh
+      // Ask for permission to access media library
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         alert('Cần cấp quyền truy cập thư viện ảnh để tiếp tục!');
         return null;
       }
 
-      // Mở trình chọn ảnh
+      // Open image picker
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true, 
@@ -34,7 +34,6 @@ export const UploadService = {
   },
 
   /**
-   * 2. Hàm upload ảnh lên Firebase Storage và lấy link trả về
    * @param uri Đường dẫn cục bộ của ảnh (lấy từ hàm pickImage)
    * @returns Download URL (link web) để lưu vào Firestore
    */
