@@ -3,5 +3,7 @@ export interface Product {
     tensanpham: string;
     loaisanpham: string;
     gia: number;
-    hinhanh: string;
+    hinhanh?: string;
 }
+
+export type ProductID = Omit <Product,"idsanpham">

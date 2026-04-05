@@ -1,13 +1,20 @@
-import type { Product } from '@/src/types/product';
+import { useProduct } from '@/src/hooks/useProduct';
 import { Link } from 'expo-router';
-import { useState } from 'react';
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Index() {
-  const [products] = useState<Product[]>([]);
+  const { products, loading } = useProduct();
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <Text className="text-lg text-gray-400">Đang tải sản phẩm...</Text>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView className="mt-10 flex-1 bg-gray-50" showsVerticalScrollIndicator={false}>
+    <View className="mt-10 flex-1 bg-gray-50" >
       {/* Header */}
       <View className="flex-row items-center justify-between border-b border-gray-200 bg-white p-4">
         <Text className="text-2xl font-bold text-gray-800">Quản lý sản phẩm</Text>
@@ -24,14 +31,21 @@ export default function Index() {
         data={products}
         keyExtractor={(item) => item.idsanpham}
         renderItem={({ item }) => (
-          <View className="mx-4 mt-4 rounded-2xl bg-white p-4 shadow-sm">
+          <View className="mx-4 mt-4 rounded-2xl bg-white p-4 shadow-sm overflow-hidden">
+            {item.hinhanh && (
+              <Image
+                source={{ uri: item.hinhanh }}
+                style={{ width: '100%', height: 200, borderRadius: 12, marginBottom: 12 }}
+              />
+            )}
             <Text className="text-lg font-semibold">{item.tensanpham}</Text>
             <Text className="text-gray-500">{item.loaisanpham}</Text>
-            <Text className="mt-1 font-medium text-green-600">
+            <Text className="mt-2 font-medium text-green-600">
               {item.gia.toLocaleString('vi-VN')} đ
             </Text>
           </View>
         )}
+        
         ListEmptyComponent={
           <View className="mt-20 flex-1 items-center justify-center">
             <Text className="text-lg text-gray-400">Chưa có sản phẩm nào</Text>
@@ -44,6 +58,6 @@ export default function Index() {
           </View>
         }
       />
-    </ScrollView>
+    </View>
   );
 }

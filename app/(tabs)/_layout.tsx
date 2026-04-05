@@ -14,6 +14,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarButton: HapticTab,
       }}
     >
@@ -43,7 +44,7 @@ export default function TabLayout() {
               <IconSymbol size={28} name="person.circle" color={color} />
             ),
           }}
-        />  
+        /> 
       </Tabs> 
   );
 }
