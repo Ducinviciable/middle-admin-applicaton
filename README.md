@@ -348,18 +348,3 @@ Khuyến nghị khi đưa production:
 - Viết Security Rules giới hạn read/write theo user role.
 - Thêm monitoring lỗi và log tập trung.
 
-## 13. Checklist triển khai production
-
-- Chuẩn hóa route resgister -> register (đồng bộ toàn bộ route liên quan).
-- Bổ sung role-based access (chỉ admin CRUD).
-- Tối ưu ảnh trước upload (resize/compress).
-- Bổ sung pagination hoặc infinite scroll cho products.
-- Viết unit test cho services và integration test cho luồng chính.
-- Định nghĩa chuẩn dữ liệu và migration strategy khi schema thay đổi.
-- Thêm cơ chế retry/backoff cho network lỗi tạm thời.
-
-## 14. Ghi chú quan trọng
-
-- Tên route đăng ký hiện tại là resgister theo tên file thực tế.
-- Danh sách sản phẩm và danh mục đều đang chạy realtime.
-- UI hiện tại ưu tiên thao tác nhanh cho admin trên mobile.
